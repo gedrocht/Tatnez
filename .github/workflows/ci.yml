@@ -172,6 +172,7 @@ jobs:
         run: >
           gcovr
           --root .
+          --exclude 'src/main.cpp'
           --exclude 'tests/'
           --exclude 'build/'
           --print-summary
@@ -184,6 +185,7 @@ jobs:
         run: >
           gcovr
           --root .
+          --exclude 'src/main.cpp'
           --exclude 'tests/'
           --exclude 'build/'
           --html-details

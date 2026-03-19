@@ -108,4 +108,34 @@ TEST(RumbleSpeakerServiceTests, PlayFramesStopsMotorsWhenTheBackendThrows) {
   EXPECT_EQ(recordingControllerRumbleBackend->stopInvocationCount, 1U);
 }
 
+TEST(RumbleSpeakerServiceTests, ConstructorRejectsNullDependencies) {
+  auto recordingControllerRumbleBackend = std::make_shared<RecordingControllerRumbleBackend>();
+  auto recordingPlaybackTimer = std::make_shared<RecordingPlaybackTimer>();
+
+  EXPECT_THROW(static_cast<void>(
+                   tatnez::rumble::RumbleSpeakerService(nullptr, createNullLogger(), recordingPlaybackTimer)),
+               std::invalid_argument);
+  EXPECT_THROW(static_cast<void>(tatnez::rumble::RumbleSpeakerService(recordingControllerRumbleBackend,
+                                                                      nullptr, recordingPlaybackTimer)),
+               std::invalid_argument);
+  EXPECT_THROW(static_cast<void>(tatnez::rumble::RumbleSpeakerService(recordingControllerRumbleBackend,
+                                                                      createNullLogger(), nullptr)),
+               std::invalid_argument);
+}
+
+TEST(RumbleSpeakerServiceTests, PlayFramesStopsMotorsEvenWhenNoFramesAreProvided) {
+  auto recordingControllerRumbleBackend = std::make_shared<RecordingControllerRumbleBackend>();
+  auto recordingPlaybackTimer = std::make_shared<RecordingPlaybackTimer>();
+
+  const tatnez::rumble::RumbleSpeakerService rumbleSpeakerService(recordingControllerRumbleBackend,
+                                                                  createNullLogger(), recordingPlaybackTimer);
+
+  const auto playbackStatistics = rumbleSpeakerService.playFrames(0U, {});
+
+  EXPECT_TRUE(recordingControllerRumbleBackend->recordedMotorCommands.empty());
+  EXPECT_EQ(recordingControllerRumbleBackend->stopInvocationCount, 1U);
+  EXPECT_EQ(playbackStatistics.playedFrameCount, 0U);
+  EXPECT_EQ(playbackStatistics.requestedPlaybackDuration, std::chrono::microseconds::zero());
+}
+
 } // namespace

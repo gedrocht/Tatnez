@@ -26,6 +26,15 @@ TEST(RumbleSignalGeneratorTests, GenerateToneFramesRejectsInvalidArguments) {
                std::invalid_argument);
 }
 
+TEST(RumbleSignalGeneratorTests, GenerateToneFramesRejectsOutOfRangeMasterIntensityScale) {
+  tatnez::rumble::RumbleSignalGenerator rumbleSignalGenerator;
+  tatnez::rumble::TonePlaybackRequest invalidTonePlaybackRequest;
+  invalidTonePlaybackRequest.masterIntensityScale = 1.5;
+
+  EXPECT_THROW(static_cast<void>(rumbleSignalGenerator.generateToneFrames(invalidTonePlaybackRequest)),
+               std::invalid_argument);
+}
+
 TEST(RumbleSignalGeneratorTests, GenerateWaveFramesProducesStableMotorValues) {
   tatnez::rumble::RumbleSignalGenerator rumbleSignalGenerator;
   const tatnez::audio::NormalizedAudioBuffer normalizedAudioBuffer{4U, {0.0F, 1.0F, -1.0F, 0.0F}};
@@ -49,6 +58,26 @@ TEST(RumbleSignalGeneratorTests, GenerateWaveFramesReturnsEmptyVectorForEmptyInp
       rumbleSignalGenerator.generateWaveFrames(normalizedAudioBuffer, tatnez::rumble::WavePlaybackRequest{});
 
   EXPECT_TRUE(generatedRumbleFrames.empty());
+}
+
+TEST(RumbleSignalGeneratorTests, GenerateWaveFramesRejectsZeroSampleRate) {
+  tatnez::rumble::RumbleSignalGenerator rumbleSignalGenerator;
+  const tatnez::audio::NormalizedAudioBuffer normalizedAudioBuffer{0U, {0.1F, 0.2F}};
+
+  EXPECT_THROW(static_cast<void>(rumbleSignalGenerator.generateWaveFrames(
+                   normalizedAudioBuffer, tatnez::rumble::WavePlaybackRequest{})),
+               std::invalid_argument);
+}
+
+TEST(RumbleSignalGeneratorTests, GenerateWaveFramesRejectsInvalidContributionScale) {
+  tatnez::rumble::RumbleSignalGenerator rumbleSignalGenerator;
+  const tatnez::audio::NormalizedAudioBuffer normalizedAudioBuffer{44100U, {0.1F, 0.2F}};
+  tatnez::rumble::WavePlaybackRequest invalidWavePlaybackRequest;
+  invalidWavePlaybackRequest.smallMotorContributionScale = 1.5;
+
+  EXPECT_THROW(static_cast<void>(rumbleSignalGenerator.generateWaveFrames(normalizedAudioBuffer,
+                                                                          invalidWavePlaybackRequest)),
+               std::invalid_argument);
 }
 
 } // namespace

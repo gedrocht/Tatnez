@@ -112,6 +112,7 @@ if(TATNEZ_BUILD_TESTS)
 
   add_executable(
     tatnez_tests
+    tests/ApplicationInfrastructureTests.cpp
     tests/TestMain.cpp
     tests/RumbleSignalGeneratorTests.cpp
     tests/RumbleSpeakerServiceTests.cpp
