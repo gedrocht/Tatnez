@@ -105,8 +105,8 @@ jobs:
           --error-exitcode=1
           --inline-suppr
           --suppress=missingIncludeSystem
-          --file-filter=${{ github.workspace }}/src/*
-          --file-filter=${{ github.workspace }}/include/*
+          --file-filter=src/**/*.cpp
+          -ibuild/static-analysis/_deps
           --project=build/static-analysis/compile_commands.json
 
       - name: Lint GitHub Actions
