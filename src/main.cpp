@@ -139,19 +139,19 @@ auto main(int argumentCount, char** argumentValues) -> int {
     }
 
     std::vector<tatnez::rumble::RumbleFrame> rumbleFrames;
-    tatnez::rumble::RumbleSignalGenerator rumbleSignalGenerator;
 
     if (*toneSubcommand) {
       applicationLogger->info("Generating a synthetic tone at {} hertz for {} seconds.",
                               tonePlaybackRequest.toneFrequencyInHertz,
                               tonePlaybackRequest.durationInSeconds);
-      rumbleFrames = rumbleSignalGenerator.generateToneFrames(tonePlaybackRequest);
+      rumbleFrames = tatnez::rumble::RumbleSignalGenerator::generateToneFrames(tonePlaybackRequest);
     } else if (*waveSubcommand) {
       applicationLogger->info("Reading WAVE file {} and converting it into rumble frames.",
                               waveFilePath.string());
-      tatnez::audio::WaveFileReader waveFileReader;
-      const auto normalizedAudioBuffer = waveFileReader.readNormalizedMonoSamplesFromFile(waveFilePath);
-      rumbleFrames = rumbleSignalGenerator.generateWaveFrames(normalizedAudioBuffer, wavePlaybackRequest);
+      const auto normalizedAudioBuffer =
+          tatnez::audio::WaveFileReader::readNormalizedMonoSamplesFromFile(waveFilePath);
+      rumbleFrames = tatnez::rumble::RumbleSignalGenerator::generateWaveFrames(normalizedAudioBuffer,
+                                                                               wavePlaybackRequest);
     } else if (!shouldListControllers) {
       std::cout << commandLineApplication.help() << '\n';
       return 0;

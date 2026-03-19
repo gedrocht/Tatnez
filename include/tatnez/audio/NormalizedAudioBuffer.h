@@ -27,7 +27,7 @@ struct NormalizedAudioBuffer final {
    *
    * Stereo files are down-mixed into this mono representation by averaging the channels.
    */
-  std::vector<float> monoSamples{};
+  std::vector<float> monoSamples;
 };
 
 } // namespace tatnez::audio

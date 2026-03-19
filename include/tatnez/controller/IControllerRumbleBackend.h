@@ -16,6 +16,11 @@ namespace tatnez::controller {
  */
 class IControllerRumbleBackend {
 public:
+  IControllerRumbleBackend() = default;
+  IControllerRumbleBackend(const IControllerRumbleBackend&) = delete;
+  auto operator=(const IControllerRumbleBackend&) -> IControllerRumbleBackend& = delete;
+  IControllerRumbleBackend(IControllerRumbleBackend&&) = delete;
+  auto operator=(IControllerRumbleBackend&&) -> IControllerRumbleBackend& = delete;
   virtual ~IControllerRumbleBackend() = default;
 
   /**

@@ -5,46 +5,16 @@ param(
   [switch]$CleanFirst
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
-function Invoke-ExternalCommand {
-  param(
-    [Parameter(Mandatory = $true)]
-    [string]$ExecutablePath,
-
-    [Parameter(Mandatory = $false)]
-    [string[]]$ExecutableArguments = @()
-  )
-
-  # Echo the exact command so a beginner can see which lower-level tools the wrapper is using.
-  Write-Host "Running:" $ExecutablePath ($ExecutableArguments -join " ")
-  & $ExecutablePath @ExecutableArguments
-
-  if($LASTEXITCODE -ne 0) {
-    throw "The command failed with exit code $LASTEXITCODE: $ExecutablePath $($ExecutableArguments -join ' ')"
-  }
-}
-
-function Test-CommandAvailability {
-  param(
-    [Parameter(Mandatory = $true)]
-    [string]$CommandName
-  )
-
-  return $null -ne (Get-Command $CommandName -ErrorAction SilentlyContinue)
-}
+. (Join-Path $PSScriptRoot "common.ps1")
 
 if(-not (Test-CommandAvailability -CommandName "cmake")) {
   throw "CMake is not available on PATH. Install CMake and reopen the shell."
 }
 
-# Resolve the repository root from the script location so the wrapper works no matter where the
-# user launches it from.
-$repositoryRootPath = Split-Path -Parent $PSScriptRoot
+$repositoryRootPath = Get-RepositoryRootPath
 
 if($CleanFirst) {
-  $buildDirectoryPath = Join-Path $repositoryRootPath ("build\" + $PresetName)
+  $buildDirectoryPath = Get-BuildDirectoryPath -PresetName $PresetName
   if(Test-Path $buildDirectoryPath) {
     Write-Host "Removing existing build directory:" $buildDirectoryPath
     Remove-Item -Recurse -Force $buildDirectoryPath
@@ -63,6 +33,8 @@ try {
   }
 
   if((-not $ConfigureOnly) -and (-not $SkipTests)) {
+    Assert-CommandAvailability -CommandName "ctest" -FailureMessage "CTest is not available on PATH. Install CMake and reopen the shell."
+
     # Running tests here keeps the wrapper aligned with the repository's normal quality workflow.
     Invoke-ExternalCommand -ExecutablePath "ctest" -ExecutableArguments @("--preset", $PresetName)
   }

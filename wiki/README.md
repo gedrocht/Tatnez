@@ -11,14 +11,20 @@ content.
 
 ## Start the wiki
 
-```bash
-docker compose -f wiki/docker-compose.yml up --build
+```powershell
+./scripts/start-wiki.ps1
 ```
 
 Then open:
 
 ```text
 http://localhost:4567
+```
+
+If Docker Desktop is not installed yet, run:
+
+```powershell
+./scripts/install-prerequisites.ps1 -IncludeWikiTools
 ```
 
 ## Seeded pages

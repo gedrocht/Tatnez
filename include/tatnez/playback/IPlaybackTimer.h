@@ -9,6 +9,11 @@ namespace tatnez::playback {
  */
 class IPlaybackTimer {
 public:
+  IPlaybackTimer() = default;
+  IPlaybackTimer(const IPlaybackTimer&) = delete;
+  auto operator=(const IPlaybackTimer&) -> IPlaybackTimer& = delete;
+  IPlaybackTimer(IPlaybackTimer&&) = delete;
+  auto operator=(IPlaybackTimer&&) -> IPlaybackTimer& = delete;
   virtual ~IPlaybackTimer() = default;
 
   /**

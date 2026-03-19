@@ -11,7 +11,14 @@
 
 namespace {
 
-constexpr auto twoPi = 6.28318530717958647692;
+constexpr auto circleRadians = 6.28318530717958647692;
+constexpr auto microsecondsPerSecond = 1'000'000.0;
+constexpr auto largeMotorPreferenceCenterFrequencyInHertz = 35.0;
+constexpr auto largeMotorPreferenceFrequencyRangeInHertz = 120.0;
+constexpr auto largeMotorMinimumPreferenceScale = 0.15;
+constexpr auto highMotorPreferenceCenterFrequencyInHertz = 20.0;
+constexpr auto highMotorPreferenceFrequencyRangeInHertz = 160.0;
+constexpr auto highMotorMinimumPreferenceScale = 0.25;
 
 void validateStrictlyPositiveValue(double valueToValidate, const char* valueDescription) {
   if (valueToValidate <= 0.0) {
@@ -33,7 +40,7 @@ auto convertNormalizedIntensityToMotorValue(double normalizedIntensity) -> std::
 
 auto computeFrameDuration(double updateRateInHertz) -> std::chrono::microseconds {
   return std::chrono::microseconds(
-      static_cast<std::chrono::microseconds::rep>(std::llround(1'000'000.0 / updateRateInHertz)));
+      static_cast<std::chrono::microseconds::rep>(std::llround(microsecondsPerSecond / updateRateInHertz)));
 }
 
 struct WindowStatistics final {
@@ -64,7 +71,7 @@ auto analyzeSampleWindow(const std::vector<float>& monoSamples, std::size_t wind
 
 namespace tatnez::rumble {
 
-auto RumbleSignalGenerator::generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest) const
+auto RumbleSignalGenerator::generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest)
     -> std::vector<RumbleFrame> {
   validateStrictlyPositiveValue(tonePlaybackRequest.toneFrequencyInHertz, "toneFrequencyInHertz");
   validateStrictlyPositiveValue(tonePlaybackRequest.durationInSeconds, "durationInSeconds");
@@ -78,10 +85,14 @@ auto RumbleSignalGenerator::generateToneFrames(const TonePlaybackRequest& tonePl
   // The Xbox 360 controller has one larger low-frequency motor and one smaller higher-frequency
   // motor. These simple preference weights bias lower requested tones toward the large motor and
   // higher requested tones toward the small motor.
-  const auto lowMotorPreference =
-      std::clamp(1.0 - ((tonePlaybackRequest.toneFrequencyInHertz - 35.0) / 120.0), 0.15, 1.0);
+  const auto lowMotorPreference = std::clamp(
+      1.0 - ((tonePlaybackRequest.toneFrequencyInHertz - largeMotorPreferenceCenterFrequencyInHertz) /
+             largeMotorPreferenceFrequencyRangeInHertz),
+      largeMotorMinimumPreferenceScale, 1.0);
   const auto highMotorPreference =
-      std::clamp(((tonePlaybackRequest.toneFrequencyInHertz - 20.0) / 160.0), 0.25, 1.0);
+      std::clamp((tonePlaybackRequest.toneFrequencyInHertz - highMotorPreferenceCenterFrequencyInHertz) /
+                     highMotorPreferenceFrequencyRangeInHertz,
+                 highMotorMinimumPreferenceScale, 1.0);
 
   std::vector<RumbleFrame> rumbleFrames;
   rumbleFrames.reserve(requestedFrameCount);
@@ -93,7 +104,7 @@ auto RumbleSignalGenerator::generateToneFrames(const TonePlaybackRequest& tonePl
     const auto playbackTimeInSeconds =
         static_cast<double>(frameIndex) / tonePlaybackRequest.updateRateInHertz;
     const auto oscillationMagnitude =
-        std::abs(std::sin(twoPi * tonePlaybackRequest.toneFrequencyInHertz * playbackTimeInSeconds));
+        std::abs(std::sin(circleRadians * tonePlaybackRequest.toneFrequencyInHertz * playbackTimeInSeconds));
     const auto scaledOscillationMagnitude = oscillationMagnitude * tonePlaybackRequest.masterIntensityScale;
 
     rumbleFrames.push_back(
@@ -106,7 +117,7 @@ auto RumbleSignalGenerator::generateToneFrames(const TonePlaybackRequest& tonePl
 }
 
 auto RumbleSignalGenerator::generateWaveFrames(const audio::NormalizedAudioBuffer& normalizedAudioBuffer,
-                                               const WavePlaybackRequest& wavePlaybackRequest) const
+                                               const WavePlaybackRequest& wavePlaybackRequest)
     -> std::vector<RumbleFrame> {
   validateStrictlyPositiveValue(wavePlaybackRequest.updateRateInHertz, "updateRateInHertz");
   validateNormalizedScale(wavePlaybackRequest.masterIntensityScale, "masterIntensityScale");
