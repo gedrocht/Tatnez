@@ -33,8 +33,7 @@ auto readBinaryFileBytes(const std::filesystem::path& filePath) -> std::vector<s
     throw std::runtime_error("The WAVE file could not be opened: " + filePath.string());
   }
 
-  return std::vector<std::uint8_t>(std::istreambuf_iterator<char>(inputFileStream),
-                                   std::istreambuf_iterator<char>());
+  return {std::istreambuf_iterator<char>(inputFileStream), std::istreambuf_iterator<char>()};
 }
 
 void requireReadableRange(const std::vector<std::uint8_t>& fileBytes, std::size_t startingOffset,
@@ -67,8 +66,8 @@ auto readLittleEndianUnsignedInteger32(const std::vector<std::uint8_t>& fileByte
 
 auto readChunkIdentifier(const std::vector<std::uint8_t>& fileBytes, std::size_t byteOffset) -> std::string {
   requireReadableRange(fileBytes, byteOffset, 4U, "a chunk identifier");
-  return std::string(fileBytes.begin() + static_cast<std::ptrdiff_t>(byteOffset),
-                     fileBytes.begin() + static_cast<std::ptrdiff_t>(byteOffset + 4U));
+  return {fileBytes.begin() + static_cast<std::ptrdiff_t>(byteOffset),
+          fileBytes.begin() + static_cast<std::ptrdiff_t>(byteOffset + 4U)};
 }
 
 auto findChunk(const std::vector<std::uint8_t>& fileBytes,
@@ -115,8 +114,8 @@ auto convertUnsignedEightBitSampleToNormalizedFloat(std::uint8_t rawSampleValue)
 }
 
 auto convertSignedIntegerSampleToNormalizedFloat(std::int32_t rawSampleValue,
-                                                 std::uint16_t bitsPerSample) -> float {
-  const auto magnitudeScale = std::pow(2.0, static_cast<double>(bitsPerSample - 1U));
+                                                 const WaveFormatChunk& waveFormatChunk) -> float {
+  const auto magnitudeScale = std::pow(2.0, static_cast<double>(waveFormatChunk.bitsPerSample - 1U));
   return static_cast<float>(static_cast<double>(rawSampleValue) / magnitudeScale);
 }
 
@@ -124,7 +123,7 @@ auto readSignedTwentyFourBitInteger(const std::vector<std::uint8_t>& fileBytes,
                                     std::size_t sampleOffset) -> std::int32_t {
   requireReadableRange(fileBytes, sampleOffset, 3U, "a 24-bit PCM sample");
 
-  std::int32_t signedSampleValue = static_cast<std::int32_t>(
+  auto signedSampleValue = static_cast<std::int32_t>(
       static_cast<std::uint32_t>(fileBytes.at(sampleOffset)) |
       static_cast<std::uint32_t>(static_cast<std::uint32_t>(fileBytes.at(sampleOffset + 1U)) << 8U) |
       static_cast<std::uint32_t>(static_cast<std::uint32_t>(fileBytes.at(sampleOffset + 2U)) << 16U));
@@ -137,28 +136,28 @@ auto readSignedTwentyFourBitInteger(const std::vector<std::uint8_t>& fileBytes,
 }
 
 auto readNormalizedSample(const std::vector<std::uint8_t>& fileBytes, std::size_t sampleOffset,
-                          std::uint16_t audioFormatTag, std::uint16_t bitsPerSample) -> float {
-  if (audioFormatTag == 1U) {
-    switch (bitsPerSample) {
+                          const WaveFormatChunk& waveFormatChunk) -> float {
+  if (waveFormatChunk.audioFormatTag == 1U) {
+    switch (waveFormatChunk.bitsPerSample) {
     case 8U:
       return convertUnsignedEightBitSampleToNormalizedFloat(fileBytes.at(sampleOffset));
     case 16U:
       return convertSignedIntegerSampleToNormalizedFloat(
           static_cast<std::int16_t>(readLittleEndianUnsignedInteger16(fileBytes, sampleOffset)),
-          bitsPerSample);
+          waveFormatChunk);
     case 24U:
       return convertSignedIntegerSampleToNormalizedFloat(
-          readSignedTwentyFourBitInteger(fileBytes, sampleOffset), bitsPerSample);
+          readSignedTwentyFourBitInteger(fileBytes, sampleOffset), waveFormatChunk);
     case 32U:
       return convertSignedIntegerSampleToNormalizedFloat(
           static_cast<std::int32_t>(readLittleEndianUnsignedInteger32(fileBytes, sampleOffset)),
-          bitsPerSample);
+          waveFormatChunk);
     default:
       break;
     }
   }
 
-  if (audioFormatTag == 3U && bitsPerSample == 32U) {
+  if (waveFormatChunk.audioFormatTag == 3U && waveFormatChunk.bitsPerSample == 32U) {
     requireReadableRange(fileBytes, sampleOffset, 4U, "a 32-bit floating-point sample");
 
     float floatingPointSampleValue{};
@@ -228,8 +227,7 @@ auto WaveFileReader::readNormalizedMonoSamplesFromFile(const std::filesystem::pa
     for (std::uint16_t channelIndex = 0; channelIndex < waveFormatChunk.channelCount; ++channelIndex) {
       const auto channelOffset =
           sampleFrameOffset + (static_cast<std::size_t>(channelIndex) * bytesPerSamplePerChannel);
-      const auto normalizedChannelValue = readNormalizedSample(
-          fileBytes, channelOffset, waveFormatChunk.audioFormatTag, waveFormatChunk.bitsPerSample);
+      const auto normalizedChannelValue = readNormalizedSample(fileBytes, channelOffset, waveFormatChunk);
 
       accumulatedChannelValue += static_cast<double>(clampNormalizedSample(normalizedChannelValue));
     }

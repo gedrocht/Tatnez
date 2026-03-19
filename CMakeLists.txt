@@ -58,6 +58,18 @@ set(INSTALL_GTEST OFF CACHE BOOL "" FORCE)
 
 FetchContent_MakeAvailable(cli11 spdlog googletest)
 
+if(TARGET CLI11)
+  set_property(TARGET CLI11 PROPERTY SYSTEM ON)
+endif()
+
+if(TARGET spdlog_header_only)
+  set_property(TARGET spdlog_header_only PROPERTY SYSTEM ON)
+endif()
+
+if(TARGET gtest)
+  set_property(TARGET gtest PROPERTY SYSTEM ON)
+endif()
+
 add_library(
   tatnez_core
   src/audio/WaveFileReader.cpp

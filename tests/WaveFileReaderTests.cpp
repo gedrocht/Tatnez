@@ -67,8 +67,8 @@ void appendChunk(std::vector<std::uint8_t>& fileBytes, const ChunkIdentifier& ch
 }
 
 auto createFormatChunkBytes(std::uint16_t audioFormatTag, std::uint16_t channelCount,
-                            std::uint32_t sampleRateInHertz, std::uint16_t bitsPerSample)
-    -> std::vector<std::uint8_t> {
+                            std::uint32_t sampleRateInHertz,
+                            std::uint16_t bitsPerSample) -> std::vector<std::uint8_t> {
   const auto blockAlignment = static_cast<std::uint16_t>((bitsPerSample / 8U) * channelCount);
   const auto bytesPerSecond = sampleRateInHertz * static_cast<std::uint32_t>(blockAlignment);
 
@@ -82,9 +82,8 @@ auto createFormatChunkBytes(std::uint16_t audioFormatTag, std::uint16_t channelC
   return formatChunkBytes;
 }
 
-auto createRiffWaveFileBytes(
-    const std::vector<std::pair<ChunkIdentifier, std::vector<std::uint8_t>>>& chunkDefinitions)
-    -> std::vector<std::uint8_t> {
+auto createRiffWaveFileBytes(const std::vector<std::pair<ChunkIdentifier, std::vector<std::uint8_t>>>&
+                                 chunkDefinitions) -> std::vector<std::uint8_t> {
   std::vector<std::uint8_t> fileBytes{'R', 'I', 'F', 'F', 0U, 0U, 0U, 0U, 'W', 'A', 'V', 'E'};
 
   for (const auto& [chunkIdentifier, chunkDataBytes] : chunkDefinitions) {
