@@ -1,7 +1,19 @@
 # Tatnez Rumble Speaker
 
+[![CI](https://github.com/gedrocht/Tatnez/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/gedrocht/Tatnez/actions/workflows/ci.yml)
+[![CodeQL](https://github.com/gedrocht/Tatnez/actions/workflows/codeql.yml/badge.svg?branch=main)](https://github.com/gedrocht/Tatnez/actions/workflows/codeql.yml)
+[![Documentation](https://github.com/gedrocht/Tatnez/actions/workflows/docs.yml/badge.svg?branch=main)](https://github.com/gedrocht/Tatnez/actions/workflows/docs.yml)
+[![Security](https://github.com/gedrocht/Tatnez/actions/workflows/security.yml/badge.svg?branch=main)](https://github.com/gedrocht/Tatnez/actions/workflows/security.yml)
+
 Tatnez Rumble Speaker is a Windows-first C++ application that converts synthetic tones or WAVE file
 amplitude envelopes into Xbox 360 controller rumble patterns through XInput.
+
+## Quick links
+
+- GitHub repository: [gedrocht/Tatnez](https://github.com/gedrocht/Tatnez)
+- GitHub Actions: [workflow runs](https://github.com/gedrocht/Tatnez/actions)
+- GitHub Pages documentation: [gedrocht.github.io/Tatnez](https://gedrocht.github.io/Tatnez/)
+- Beginner docs source: [docs/site/index.md](docs/site/index.md)
 
 ## Important technical limitation
 
@@ -22,6 +34,15 @@ generating and playing rumble sequences.
 ## Complete beginner path
 
 If you are new to C++, CMake, or Windows build tools, use these commands in this exact order.
+
+If you only want the shortest possible path, these are the four commands to remember:
+
+```powershell
+./scripts/install-prerequisites.ps1
+./scripts/check-prerequisites.ps1
+./scripts/build.ps1
+./scripts/run.ps1
+```
 
 ### Step 1: See the roadmap
 
@@ -161,6 +182,7 @@ For Unix-like shells, the build wrapper is:
 - Beginner-friendly documentation site: see [docs/site/index.md](docs/site/index.md)
 - API reference source for Doxygen: public headers under [include](include)
 - Local serveable wiki using Gollum: see [wiki/README.md](wiki/README.md)
+- Published GitHub Pages site: [gedrocht.github.io/Tatnez](https://gedrocht.github.io/Tatnez/)
 
 ## Documentation commands
 
@@ -201,3 +223,14 @@ The repository is set up with strict automation for:
 - CodeQL
 - GitHub Pages documentation publishing
 - OpenSSF Scorecard checks
+
+## Repository overview
+
+If you are visiting this repository on GitHub for the first time, the simplest order is:
+
+1. Read this README.
+2. Run `./scripts/start-here.ps1`.
+3. Install prerequisites.
+4. Build with `./scripts/build.ps1`.
+5. Test with `./scripts/test.ps1`.
+6. Explore the beginner docs and wiki once the basics work.
