@@ -1,6 +1,7 @@
 repository:
   name: tatnez-rumble-speaker
-  description: Windows C++ rumble-audio experiment for Xbox 360 controllers with strict security, testing, docs, and review automation.
+  description: Windows-first C++ Xbox 360 controller rumble synthesizer with beginner-friendly docs and rigorous CI.
+  homepage: https://gedrocht.github.io/Tatnez/
   has_issues: true
   has_projects: false
   has_wiki: false
