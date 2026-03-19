@@ -25,9 +25,21 @@ Open a Developer PowerShell for Visual Studio or another shell that already has 
 `PATH`, then run:
 
 ```bash
+./scripts/build.ps1
+```
+
+If you prefer the raw CMake commands:
+
+```bash
 cmake --preset default
 cmake --build --preset default
 ctest --preset default
+```
+
+For Unix-like shells:
+
+```bash
+./scripts/build.sh
 ```
 
 Generate a synthetic tone without touching real hardware:

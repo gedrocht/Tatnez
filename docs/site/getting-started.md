@@ -14,6 +14,13 @@ Open a shell that already has your compiler environment configured. On Windows t
 Developer PowerShell for Visual Studio.
 
 ```bash
+./scripts/build.ps1
+```
+
+The PowerShell wrapper configures, builds, and runs the default test suite. If you prefer the
+lower-level commands, you can still run:
+
+```bash
 cmake --preset default
 cmake --build --preset default
 ctest --preset default
