@@ -105,7 +105,6 @@ jobs:
           --error-exitcode=1
           --inline-suppr
           --suppress=missingIncludeSystem
-          --file-filter=src/**/*.cpp
           -ibuild/static-analysis/_deps
           --project=build/static-analysis/compile_commands.json
 
