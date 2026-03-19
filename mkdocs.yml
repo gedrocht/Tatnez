@@ -17,6 +17,8 @@ markdown_extensions:
 nav:
   - Home: index.md
   - Getting Started: getting-started.md
+  - Beginner Walkthrough: beginner-walkthrough.md
+  - Scripts Reference: scripts-reference.md
   - Tutorials:
       - First Rumble Tone: tutorials/first-rumble-tone.md
       - Using WAVE Files: tutorials/using-wave-files.md

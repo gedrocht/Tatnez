@@ -1,58 +1,106 @@
 # Getting Started
 
-## What you need
+## The shortest possible beginner path
 
-- Windows if you want to drive a real Xbox 360 controller through XInput
-- A C++20 compiler
-- CMake 3.27 or newer
-- Ninja or another CMake generator
-- Python if you want to build the documentation site locally
+Run these commands in order:
 
-## Build the project
+```powershell
+./scripts/start-here.ps1
+./scripts/install-prerequisites.ps1
+```
 
-Open a shell that already has your compiler environment configured. On Windows that usually means a
-Developer PowerShell for Visual Studio.
+If you also want local documentation tooling and the wiki:
 
-```bash
+```powershell
+./scripts/install-prerequisites.ps1 -IncludeDocumentationTools -IncludeWikiTools
+```
+
+Close the shell, reopen **Developer PowerShell for Visual Studio**, then run:
+
+```powershell
+./scripts/check-prerequisites.ps1
 ./scripts/build.ps1
+./scripts/run.ps1
+./scripts/test.ps1
 ```
 
-The PowerShell wrapper configures, builds, and runs the default test suite. If you prefer the
-lower-level commands, you can still run:
+If you want to build and browse the documentation locally too:
 
-```bash
-cmake --preset default
-cmake --build --preset default
-ctest --preset default
+```powershell
+./scripts/build-docs.ps1
+./scripts/serve-docs.ps1
+./scripts/start-wiki.ps1
 ```
 
-## First safe command
+## What each command does
 
-Start with a dry run so you can see how the signal generator behaves without touching real
-hardware:
+### `./scripts/start-here.ps1`
 
-```bash
-./build/default/tatnez_cli --dry-run tone --frequency-hz 40 --duration-seconds 2
+Prints the beginner workflow in the exact order we recommend.
+
+### `./scripts/install-prerequisites.ps1`
+
+Installs the Windows prerequisites through `winget`:
+
+- CMake
+- Python 3.12
+- Ninja
+- Visual Studio Build Tools 2022
+
+When the Visual Studio Build Tools installer opens, select **Desktop development with C++**.
+
+### `./scripts/check-prerequisites.ps1`
+
+Confirms whether the current shell can see:
+
+- `cmake`
+- `ctest`
+- `python`
+- `ninja`
+- `cl.exe`
+
+### `./scripts/build.ps1`
+
+Configures, builds, and tests the default preset.
+
+### `./scripts/run.ps1`
+
+Runs the application. By default it performs a safe dry run.
+
+### `./scripts/test.ps1`
+
+Runs the automated tests for the selected preset.
+
+### `./scripts/build-docs.ps1`
+
+Builds the static documentation site. If Doxygen is installed, it also builds the API reference.
+
+### `./scripts/serve-docs.ps1`
+
+Builds the documentation site and serves it locally at `http://localhost:8000`.
+
+### `./scripts/start-wiki.ps1`
+
+Starts the local Gollum wiki at `http://localhost:4567`.
+
+## Safe first run
+
+This is the safest beginner command because it does not vibrate real hardware:
+
+```powershell
+./scripts/run.ps1
 ```
 
-## What the dry run tells you
+## First hardware check
 
-- how many rumble frames were generated
-- the first frame values
-- whether the command-line parsing and signal generation path worked
-
-## When you are ready for hardware
-
-List controller slots:
-
-```bash
-./build/default/tatnez_cli --list-controllers
+```powershell
+./scripts/run.ps1 -ListControllers
 ```
 
-Then send a short tone to slot `0`:
+## First live tone
 
-```bash
-./build/default/tatnez_cli --controller-index 0 tone --frequency-hz 35 --duration-seconds 1
+```powershell
+./scripts/run.ps1 -LiveHardware -ControllerIndex 0
 ```
 
 ## Where logs go
@@ -63,4 +111,4 @@ On Windows, logs default to:
 %LOCALAPPDATA%\TatnezRumbleSpeaker\logs
 ```
 
-You can override the path with `--log-directory`.
+You can override the path with `-LogDirectory` when you use `./scripts/run.ps1`.

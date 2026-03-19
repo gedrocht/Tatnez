@@ -32,10 +32,13 @@ There are two interesting engineering lessons here:
 ## Recommended reading order for beginners
 
 1. Read [Getting Started](getting-started.md).
-2. Read [First Rumble Tone](tutorials/first-rumble-tone.md).
-3. Read [Architecture](architecture.md).
-4. Read [Limitations and Roadmap](limitations-and-roadmap.md).
-5. Explore the API reference after the higher-level ideas make sense.
+2. Read [Beginner Walkthrough](beginner-walkthrough.md).
+3. Read [Scripts Reference](scripts-reference.md).
+4. Build the docs locally with `./scripts/build-docs.ps1` if you want a local copy.
+5. Read [First Rumble Tone](tutorials/first-rumble-tone.md).
+6. Read [Architecture](architecture.md).
+7. Read [Limitations and Roadmap](limitations-and-roadmap.md).
+8. Explore the API reference after the higher-level ideas make sense.
 
 ## Documentation layers
 

@@ -5,14 +5,24 @@ selected implementation files.
 
 ## Local build
 
-If Doxygen is installed:
+The simplest beginner command is:
 
-```bash
-cmake --preset default
-cmake --build build/default --target documentation_api_reference
+```powershell
+./scripts/build-docs.ps1
 ```
 
-The generated HTML will appear in the build directory under `doxygen/html`.
+If Doxygen is installed, that script builds the API reference and copies it into the generated
+static documentation site.
+
+If you want only the raw lower-level commands, they are:
+
+```powershell
+cmake -S . -B build/docs -G Ninja
+cmake --build build/docs --target documentation_api_reference
+python scripts/publish_api_docs.py build/docs/doxygen/html site/api/reference
+```
+
+The raw generated HTML appears under `build/docs/doxygen/html`.
 
 ## On GitHub Pages
 
