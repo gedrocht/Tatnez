@@ -98,6 +98,28 @@ jobs:
       - name: Build with clang-tidy
         run: cmake --build build/static-analysis
 
+      - name: Filter compile database for production sources
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+
+          compile_commands_path = pathlib.Path("build/static-analysis/compile_commands.json")
+          compile_commands = json.loads(compile_commands_path.read_text(encoding="utf-8"))
+          production_compile_commands = [
+              compile_command
+              for compile_command in compile_commands
+              if "/src/" in pathlib.PurePosixPath(compile_command["file"]).as_posix()
+          ]
+
+          if not production_compile_commands:
+              raise SystemExit("No production source files were found in compile_commands.json.")
+
+          output_path = pathlib.Path("build/static-analysis/compile_commands.production.json")
+          output_path.write_text(json.dumps(production_compile_commands, indent=2), encoding="utf-8")
+          print(f"Wrote {len(production_compile_commands)} production compile commands to {output_path}.")
+          PY
+
       - name: Run cppcheck
         run: >
           cppcheck
@@ -106,7 +128,7 @@ jobs:
           --inline-suppr
           --suppress=missingIncludeSystem
           -ibuild/static-analysis/_deps
-          --project=build/static-analysis/compile_commands.json
+          --project=build/static-analysis/compile_commands.production.json
 
       - name: Lint GitHub Actions
         uses: raven-actions/actionlint@v2

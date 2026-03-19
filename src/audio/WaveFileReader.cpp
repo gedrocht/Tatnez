@@ -34,7 +34,9 @@ auto readBinaryFileBytes(const std::filesystem::path& filePath) -> std::vector<s
     throw std::runtime_error("The WAVE file could not be opened: " + filePath.string());
   }
 
-  return {std::istreambuf_iterator<char>(inputFileStream), std::istreambuf_iterator<char>()};
+  std::vector<std::uint8_t> fileBytes(std::istreambuf_iterator<char>(inputFileStream),
+                                      std::istreambuf_iterator<char>());
+  return fileBytes;
 }
 
 void requireReadableRange(const std::vector<std::uint8_t>& fileBytes, std::size_t startingOffset,
