@@ -34,8 +34,8 @@ auto readBinaryFileBytes(const std::filesystem::path& filePath) -> std::vector<s
     throw std::runtime_error("The WAVE file could not be opened: " + filePath.string());
   }
 
-  std::vector<std::uint8_t> fileBytes(std::istreambuf_iterator<char>(inputFileStream),
-                                      std::istreambuf_iterator<char>());
+  auto fileBytes = std::vector<std::uint8_t>(std::istreambuf_iterator<char>(inputFileStream),
+                                             std::istreambuf_iterator<char>());
   return fileBytes;
 }
 
