@@ -1,4 +1,4 @@
-FROM ruby:3.3-bookworm
+FROM ruby:4.0-bookworm
 
 RUN apt-get update \
   && apt-get install --yes --no-install-recommends build-essential git libicu-dev pkg-config \
