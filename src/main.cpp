@@ -148,8 +148,8 @@ auto main(int argumentCount, char** argumentValues) -> int {
     } else if (*waveSubcommand) {
       applicationLogger->info("Reading WAVE file {} and converting it into rumble frames.",
                               waveFilePath.string());
-      tatnez::audio::WaveFileReader waveFileReader;
-      const auto normalizedAudioBuffer = waveFileReader.readNormalizedMonoSamplesFromFile(waveFilePath);
+      const auto normalizedAudioBuffer =
+          tatnez::audio::WaveFileReader::readNormalizedMonoSamplesFromFile(waveFilePath);
       rumbleFrames = tatnez::rumble::RumbleSignalGenerator::generateWaveFrames(normalizedAudioBuffer,
                                                                                wavePlaybackRequest);
     } else if (!shouldListControllers) {

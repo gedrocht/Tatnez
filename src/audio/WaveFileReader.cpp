@@ -1,6 +1,7 @@
 #include "tatnez/audio/WaveFileReader.h"
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
@@ -160,8 +161,11 @@ auto readNormalizedSample(const std::vector<std::uint8_t>& fileBytes, std::size_
   if (waveFormatChunk.audioFormatTag == 3U && waveFormatChunk.bitsPerSample == 32U) {
     requireReadableRange(fileBytes, sampleOffset, 4U, "a 32-bit floating-point sample");
 
+    const std::array<std::uint8_t, 4U> floatingPointSampleBytes{
+        fileBytes.at(sampleOffset), fileBytes.at(sampleOffset + 1U), fileBytes.at(sampleOffset + 2U),
+        fileBytes.at(sampleOffset + 3U)};
     float floatingPointSampleValue{};
-    std::memcpy(&floatingPointSampleValue, fileBytes.data() + static_cast<std::ptrdiff_t>(sampleOffset), 4U);
+    std::memcpy(&floatingPointSampleValue, floatingPointSampleBytes.data(), floatingPointSampleBytes.size());
     return floatingPointSampleValue;
   }
 
@@ -176,7 +180,7 @@ auto clampNormalizedSample(float normalizedSampleValue) -> float {
 
 namespace tatnez::audio {
 
-auto WaveFileReader::readNormalizedMonoSamplesFromFile(const std::filesystem::path& waveFilePath) const
+auto WaveFileReader::readNormalizedMonoSamplesFromFile(const std::filesystem::path& waveFilePath)
     -> NormalizedAudioBuffer {
   const auto fileBytes = readBinaryFileBytes(waveFilePath);
   if (fileBytes.size() < 12U) {
