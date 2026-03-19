@@ -1,22 +1,30 @@
 # Contributing
 
-## Standards
+## Philosophy
 
-- Keep changes small, reviewable, and well-tested.
-- Prefer secure defaults and fail-safe behavior.
-- Update documentation with behavior changes.
-- Add or strengthen tests for every bug fix or feature.
+This repository is deliberately strict. The point is not to make contribution difficult; the point
+is to protect a hardware-facing experiment with enough tooling that regressions, unsafe assumptions,
+and undocumented behavior are caught early.
 
-## Local checks
+## Expectations
 
-Install `pre-commit` and run:
+- Prefer self-descriptive names over abbreviated names.
+- Add comments and documentation as if a motivated beginner will read the code next.
+- Favor clear control flow over cleverness.
+- Add tests whenever behavior changes.
+- Document limitations honestly, especially where Windows or XInput impose hard constraints.
 
-```bash
-pre-commit run --all-files
-```
+## Local development workflow
+
+1. Open a shell that has a working C++ toolchain.
+2. Install `pre-commit`.
+3. Run `pre-commit run --all-files`.
+4. Configure and build with `cmake --preset default`.
+5. Run `ctest --preset default`.
 
 ## Pull requests
 
-- Explain the user-visible impact
-- Describe risks and rollback considerations
-- Call out any security-sensitive areas
+- Explain the problem being solved.
+- Describe the operational and security risks.
+- Note whether behavior changed on Windows only or in cross-platform core code.
+- Update beginner docs and API docs when interfaces or workflows change.

@@ -1,0 +1,9 @@
+---
+BasedOnStyle: LLVM
+IndentWidth: 2
+ColumnLimit: 110
+PointerAlignment: Left
+AllowShortIfStatementsOnASingleLine: false
+SortIncludes: true
+SpaceBeforeParens: ControlStatements
+...

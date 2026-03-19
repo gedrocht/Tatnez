@@ -1,0 +1,70 @@
+name: Documentation
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-docs:
+    name: Build Docs
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install documentation dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes doxygen graphviz ninja-build g++
+          python -m pip install --upgrade pip
+          pip install -r requirements-docs.txt
+
+      - name: Configure CMake
+        run: cmake -S . -B build/docs -G Ninja
+
+      - name: Build API reference
+        run: cmake --build build/docs --target documentation_api_reference
+
+      - name: Build MkDocs site
+        run: mkdocs build --strict
+
+      - name: Publish Doxygen pages into the site directory
+        run: python scripts/publish_api_docs.py build/docs/doxygen/html site/api/reference
+
+      - name: Upload documentation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: documentation-site
+          path: site
+
+      - name: Upload GitHub Pages artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  deploy-pages:
+    name: Deploy GitHub Pages
+    if: github.event_name != 'pull_request'
+    needs: build-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4

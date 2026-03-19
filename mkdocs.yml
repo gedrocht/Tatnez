@@ -1,0 +1,30 @@
+site_name: Tatnez Rumble Speaker
+site_description: Beginner-friendly documentation for a Windows C++ Xbox 360 controller rumble experiment
+docs_dir: docs/site
+site_dir: site
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.top
+    - content.code.copy
+markdown_extensions:
+  - admonition
+  - attr_list
+  - tables
+  - toc:
+      permalink: true
+nav:
+  - Home: index.md
+  - Getting Started: getting-started.md
+  - Tutorials:
+      - First Rumble Tone: tutorials/first-rumble-tone.md
+      - Using WAVE Files: tutorials/using-wave-files.md
+  - Concepts:
+      - Architecture: architecture.md
+      - Logging: logging.md
+      - Testing and Quality: testing-and-quality.md
+      - Limitations and Roadmap: limitations-and-roadmap.md
+  - References:
+      - External Libraries: external-libraries.md
+      - API Reference: api-reference.md

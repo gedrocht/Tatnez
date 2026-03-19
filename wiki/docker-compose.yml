@@ -1,0 +1,13 @@
+services:
+  gollum-wiki:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "4567:4567"
+    volumes:
+      - ./seed:/wiki-seed:ro
+      - wiki_runtime:/wiki-runtime
+
+volumes:
+  wiki_runtime:

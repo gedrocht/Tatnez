@@ -1,0 +1,10 @@
+function(tatnez_enable_coverage target_name enable_coverage)
+  if(NOT enable_coverage)
+    return()
+  endif()
+
+  if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    target_compile_options("${target_name}" PRIVATE --coverage -O0 -g)
+    target_link_options("${target_name}" PRIVATE --coverage)
+  endif()
+endfunction()

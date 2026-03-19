@@ -29,3 +29,12 @@ build/
 out/
 tmp/
 temp/
+/site/
+compile_commands.json
+
+# Documentation and wiki runtime
+docs/api/
+wiki/runtime/
+
+# CMake / tooling
+CMakeUserPresets.json

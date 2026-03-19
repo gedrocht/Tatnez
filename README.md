@@ -1,16 +1,75 @@
-# Tatnez
+# Tatnez Rumble Speaker
 
-This repository is initialized with a strict GitHub quality and security baseline.
+Tatnez Rumble Speaker is a Windows-first C++ application that converts synthetic tones or WAVE file
+amplitude envelopes into Xbox 360 controller rumble patterns through XInput.
 
-## Included protections
+## Important technical limitation
 
-- CI checks for repository hygiene and workflow validation
-- Secret scanning with Gitleaks
-- Dependency review on pull requests
-- OpenSSF Scorecard supply-chain checks
-- CodeQL configuration scaffold
-- PR templates and security policy files
+This project can make the motors behave like extremely crude haptic transducers, but it **cannot**
+make Windows 10 enumerate an Xbox 360 controller as a native audio output endpoint through XInput
+alone. A true audio device in Windows requires a separate virtual or hardware audio driver. This
+repository therefore focuses on the part that is technically honest and achievable in user-space:
+generating and playing rumble sequences.
 
-## Next step
+## What the application does
 
-Add the project code and language-specific test/lint commands, then extend the CI workflow to run them with coverage thresholds.
+- Generates synthetic rumble tones at a requested modulation frequency
+- Reads uncompressed `.wav` files and converts their amplitude envelope into rumble frames
+- Plays those frames through a connected Xbox 360 controller on Windows
+- Logs every important step to both the console and a persistent log file
+- Keeps the signal-generation code testable independently of physical hardware
+
+## Quick start
+
+Open a Developer PowerShell for Visual Studio or another shell that already has a C++ compiler on
+`PATH`, then run:
+
+```bash
+cmake --preset default
+cmake --build --preset default
+ctest --preset default
+```
+
+Generate a synthetic tone without touching real hardware:
+
+```bash
+./build/default/tatnez_cli --dry-run tone --frequency-hz 40 --duration-seconds 2
+```
+
+List controller slots:
+
+```bash
+./build/default/tatnez_cli --list-controllers
+```
+
+Play a WAVE file through controller rumble on Windows:
+
+```bash
+./build/default/tatnez_cli --controller-index 0 wave --input-wave-file example.wav
+```
+
+## Documentation layers
+
+- Beginner-friendly documentation site: see [docs/site/index.md](docs/site/index.md)
+- API reference source for Doxygen: public headers under [include](include)
+- Local serveable wiki using Gollum: see [wiki/README.md](wiki/README.md)
+
+## Logging
+
+By default the application stores logs under `%LOCALAPPDATA%\TatnezRumbleSpeaker\logs` on Windows.
+You can override that location with `--log-directory`.
+
+## Quality gates
+
+The repository is set up with strict automation for:
+
+- formatting and repository hygiene
+- unit and orchestration tests
+- static analysis with `clang-tidy` and `cppcheck`
+- sanitizer builds
+- coverage thresholds
+- secret scanning
+- dependency review
+- CodeQL
+- GitHub Pages documentation publishing
+- OpenSSF Scorecard checks
