@@ -175,6 +175,8 @@ jobs:
           --exclude 'src/main.cpp'
           --exclude 'tests/'
           --exclude 'build/'
+          --exclude-unreachable-branches
+          --exclude-throw-branches
           --print-summary
           --xml-pretty
           --output build/coverage.xml
@@ -188,6 +190,8 @@ jobs:
           --exclude 'src/main.cpp'
           --exclude 'tests/'
           --exclude 'build/'
+          --exclude-unreachable-branches
+          --exclude-throw-branches
           --html-details
           --output build/coverage/index.html
 

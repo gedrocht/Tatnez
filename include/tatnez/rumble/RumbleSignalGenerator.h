@@ -7,6 +7,12 @@
 
 namespace tatnez::rumble {
 
+inline constexpr auto defaultToneFrequencyInHertz = 40.0;
+inline constexpr auto defaultToneDurationInSeconds = 2.0;
+inline constexpr auto defaultRumbleUpdateRateInHertz = 200.0;
+inline constexpr auto defaultMasterIntensityScale = 1.0;
+inline constexpr auto defaultLargeMotorContributionScale = 0.65;
+
 /**
  * @brief Input configuration for synthetic tone playback.
  */
@@ -18,22 +24,22 @@ struct TonePlaybackRequest final {
    * acoustic frequency. The motors have significant physical limitations, so this value is best
    * thought of as a target modulation rate for a haptic approximation.
    */
-  double toneFrequencyInHertz{40.0};
+  double toneFrequencyInHertz{defaultToneFrequencyInHertz};
 
   /**
    * @brief Playback duration in seconds.
    */
-  double durationInSeconds{2.0};
+  double durationInSeconds{defaultToneDurationInSeconds};
 
   /**
    * @brief How many rumble updates should be produced every second.
    */
-  double updateRateInHertz{200.0};
+  double updateRateInHertz{defaultRumbleUpdateRateInHertz};
 
   /**
    * @brief Master gain applied to both motors, expected in the range [0.0, 1.0].
    */
-  double masterIntensityScale{1.0};
+  double masterIntensityScale{defaultMasterIntensityScale};
 };
 
 /**
@@ -43,22 +49,22 @@ struct WavePlaybackRequest final {
   /**
    * @brief How many rumble frames should be produced for every second of source audio.
    */
-  double updateRateInHertz{200.0};
+  double updateRateInHertz{defaultRumbleUpdateRateInHertz};
 
   /**
    * @brief Overall gain applied to the generated motor intensities.
    */
-  double masterIntensityScale{1.0};
+  double masterIntensityScale{defaultMasterIntensityScale};
 
   /**
    * @brief Scaling factor for the large low-frequency motor.
    */
-  double largeMotorContributionScale{0.65};
+  double largeMotorContributionScale{defaultLargeMotorContributionScale};
 
   /**
    * @brief Scaling factor for the small high-frequency motor.
    */
-  double smallMotorContributionScale{1.0};
+  double smallMotorContributionScale{defaultMasterIntensityScale};
 };
 
 /**
@@ -69,15 +75,15 @@ public:
   /**
    * @brief Generate rumble frames for a synthetic tone.
    */
-  [[nodiscard]] auto
-  generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest) const -> std::vector<RumbleFrame>;
+  [[nodiscard]] static auto generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest)
+      -> std::vector<RumbleFrame>;
 
   /**
    * @brief Generate rumble frames from normalized mono audio.
    */
-  [[nodiscard]] auto
-  generateWaveFrames(const audio::NormalizedAudioBuffer& normalizedAudioBuffer,
-                     const WavePlaybackRequest& wavePlaybackRequest) const -> std::vector<RumbleFrame>;
+  [[nodiscard]] static auto generateWaveFrames(const audio::NormalizedAudioBuffer& normalizedAudioBuffer,
+                                               const WavePlaybackRequest& wavePlaybackRequest)
+      -> std::vector<RumbleFrame>;
 };
 
 } // namespace tatnez::rumble

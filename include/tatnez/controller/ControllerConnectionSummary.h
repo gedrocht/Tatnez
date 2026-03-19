@@ -22,12 +22,12 @@ struct ControllerConnectionSummary final {
   /**
    * @brief A human-readable name for the backend that produced the summary.
    */
-  std::string backendDisplayName{};
+  std::string backendDisplayName;
 
   /**
    * @brief Extra diagnostic text intended for logs and troubleshooting.
    */
-  std::string diagnosticMessage{};
+  std::string diagnosticMessage;
 };
 
 } // namespace tatnez::controller
