@@ -24,15 +24,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 include(CompilerWarnings)
+include(ClangTidy)
 include(Sanitizers)
 include(Coverage)
-
-if(TATNEZ_ENABLE_CLANG_TIDY)
-  find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy)
-  if(CLANG_TIDY_EXECUTABLE)
-    set(CMAKE_CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
-  endif()
-endif()
 
 FetchContent_Declare(
   cli11
@@ -94,6 +88,7 @@ if(WIN32)
 endif()
 
 tatnez_enable_project_warnings(tatnez_core ${TATNEZ_ENABLE_WARNINGS_AS_ERRORS})
+tatnez_enable_clang_tidy(tatnez_core ${TATNEZ_ENABLE_CLANG_TIDY})
 tatnez_enable_sanitizers(tatnez_core ${TATNEZ_ENABLE_SANITIZERS})
 tatnez_enable_coverage(tatnez_core ${TATNEZ_ENABLE_COVERAGE})
 
@@ -108,6 +103,7 @@ target_link_libraries(tatnez_cli PRIVATE tatnez::core)
 target_link_libraries(tatnez_cli PRIVATE CLI11::CLI11)
 
 tatnez_enable_project_warnings(tatnez_cli ${TATNEZ_ENABLE_WARNINGS_AS_ERRORS})
+tatnez_enable_clang_tidy(tatnez_cli ${TATNEZ_ENABLE_CLANG_TIDY})
 tatnez_enable_sanitizers(tatnez_cli ${TATNEZ_ENABLE_SANITIZERS})
 tatnez_enable_coverage(tatnez_cli ${TATNEZ_ENABLE_COVERAGE})
 

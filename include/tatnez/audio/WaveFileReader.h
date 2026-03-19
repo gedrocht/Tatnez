@@ -23,8 +23,8 @@ public:
    * @return NormalizedAudioBuffer A normalized mono buffer ready for rumble synthesis.
    * @throws std::runtime_error Thrown when the file is missing, malformed, or unsupported.
    */
-  [[nodiscard]] auto readNormalizedMonoSamplesFromFile(const std::filesystem::path& waveFilePath) const
-      -> NormalizedAudioBuffer;
+  [[nodiscard]] auto
+  readNormalizedMonoSamplesFromFile(const std::filesystem::path& waveFilePath) const -> NormalizedAudioBuffer;
 };
 
 } // namespace tatnez::audio

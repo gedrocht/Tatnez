@@ -69,15 +69,15 @@ public:
   /**
    * @brief Generate rumble frames for a synthetic tone.
    */
-  [[nodiscard]] auto generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest) const
-      -> std::vector<RumbleFrame>;
+  [[nodiscard]] auto
+  generateToneFrames(const TonePlaybackRequest& tonePlaybackRequest) const -> std::vector<RumbleFrame>;
 
   /**
    * @brief Generate rumble frames from normalized mono audio.
    */
-  [[nodiscard]] auto generateWaveFrames(const audio::NormalizedAudioBuffer& normalizedAudioBuffer,
-                                        const WavePlaybackRequest& wavePlaybackRequest) const
-      -> std::vector<RumbleFrame>;
+  [[nodiscard]] auto
+  generateWaveFrames(const audio::NormalizedAudioBuffer& normalizedAudioBuffer,
+                     const WavePlaybackRequest& wavePlaybackRequest) const -> std::vector<RumbleFrame>;
 };
 
 } // namespace tatnez::rumble

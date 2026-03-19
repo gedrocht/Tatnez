@@ -26,8 +26,8 @@ public:
   /**
    * @brief Inspect one controller slot and describe what was found.
    */
-  [[nodiscard]] virtual auto queryControllerConnectionSummary(std::uint32_t controllerIndex) const
-      -> ControllerConnectionSummary = 0;
+  [[nodiscard]] virtual auto
+  queryControllerConnectionSummary(std::uint32_t controllerIndex) const -> ControllerConnectionSummary = 0;
 
   /**
    * @brief Send motor intensity values to one controller slot.

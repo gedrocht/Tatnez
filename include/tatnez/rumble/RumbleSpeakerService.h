@@ -33,9 +33,9 @@ public:
   /**
    * @brief Play a sequence of rumble frames through one controller slot.
    */
-  [[nodiscard]] auto playFrames(std::uint32_t controllerIndex,
-                                const std::vector<RumbleFrame>& rumbleFrames) const
-      -> RumblePlaybackStatistics;
+  [[nodiscard]] auto
+  playFrames(std::uint32_t controllerIndex,
+             const std::vector<RumbleFrame>& rumbleFrames) const -> RumblePlaybackStatistics;
 
 private:
   std::shared_ptr<controller::IControllerRumbleBackend> controllerRumbleBackend_;

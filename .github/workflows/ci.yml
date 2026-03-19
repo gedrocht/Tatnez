@@ -175,10 +175,19 @@ jobs:
           --exclude 'tests/'
           --exclude 'build/'
           --print-summary
-          --xml-pretty build/coverage.xml
-          --html-details build/coverage/index.html
+          --xml-pretty
+          --output build/coverage.xml
           --fail-under-line 85
           --fail-under-branch 70
+
+      - name: Generate coverage HTML
+        run: >
+          gcovr
+          --root .
+          --exclude 'tests/'
+          --exclude 'build/'
+          --html-details
+          --output build/coverage/index.html
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4

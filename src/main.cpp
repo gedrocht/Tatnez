@@ -130,7 +130,7 @@ auto main(int argumentCount, char** argumentValues) -> int {
     applicationLogger->info("Tatnez Rumble Speaker is starting.");
 
     auto controllerRumbleBackend = std::shared_ptr<tatnez::controller::IControllerRumbleBackend>(
-        tatnez::controller::createPlatformControllerRumbleBackend().release());
+        tatnez::controller::createPlatformControllerRumbleBackend());
 
     if (shouldListControllers) {
       // Listing controller slots is intentionally available independently of playback. This gives

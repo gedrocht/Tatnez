@@ -45,8 +45,8 @@ void requireReadableRange(const std::vector<std::uint8_t>& fileBytes, std::size_
   }
 }
 
-auto readLittleEndianUnsignedInteger16(const std::vector<std::uint8_t>& fileBytes, std::size_t byteOffset)
-    -> std::uint16_t {
+auto readLittleEndianUnsignedInteger16(const std::vector<std::uint8_t>& fileBytes,
+                                       std::size_t byteOffset) -> std::uint16_t {
   requireReadableRange(fileBytes, byteOffset, 2U, "a 16-bit integer");
 
   return static_cast<std::uint16_t>(
@@ -54,8 +54,8 @@ auto readLittleEndianUnsignedInteger16(const std::vector<std::uint8_t>& fileByte
       static_cast<std::uint16_t>(static_cast<std::uint16_t>(fileBytes.at(byteOffset + 1U)) << 8U));
 }
 
-auto readLittleEndianUnsignedInteger32(const std::vector<std::uint8_t>& fileBytes, std::size_t byteOffset)
-    -> std::uint32_t {
+auto readLittleEndianUnsignedInteger32(const std::vector<std::uint8_t>& fileBytes,
+                                       std::size_t byteOffset) -> std::uint32_t {
   requireReadableRange(fileBytes, byteOffset, 4U, "a 32-bit integer");
 
   return static_cast<std::uint32_t>(
@@ -71,8 +71,8 @@ auto readChunkIdentifier(const std::vector<std::uint8_t>& fileBytes, std::size_t
                      fileBytes.begin() + static_cast<std::ptrdiff_t>(byteOffset + 4U));
 }
 
-auto findChunk(const std::vector<std::uint8_t>& fileBytes, std::string_view desiredChunkIdentifier)
-    -> std::optional<ChunkLocation> {
+auto findChunk(const std::vector<std::uint8_t>& fileBytes,
+               std::string_view desiredChunkIdentifier) -> std::optional<ChunkLocation> {
   // The first 12 bytes of a RIFF/WAVE file are the container header. After that come the
   // variable-length chunks such as `fmt ` and `data`.
   std::size_t chunkHeaderOffset = 12U;
@@ -114,14 +114,14 @@ auto convertUnsignedEightBitSampleToNormalizedFloat(std::uint8_t rawSampleValue)
   return static_cast<float>((static_cast<double>(rawSampleValue) - 128.0) / 128.0);
 }
 
-auto convertSignedIntegerSampleToNormalizedFloat(std::int32_t rawSampleValue, std::uint16_t bitsPerSample)
-    -> float {
+auto convertSignedIntegerSampleToNormalizedFloat(std::int32_t rawSampleValue,
+                                                 std::uint16_t bitsPerSample) -> float {
   const auto magnitudeScale = std::pow(2.0, static_cast<double>(bitsPerSample - 1U));
   return static_cast<float>(static_cast<double>(rawSampleValue) / magnitudeScale);
 }
 
-auto readSignedTwentyFourBitInteger(const std::vector<std::uint8_t>& fileBytes, std::size_t sampleOffset)
-    -> std::int32_t {
+auto readSignedTwentyFourBitInteger(const std::vector<std::uint8_t>& fileBytes,
+                                    std::size_t sampleOffset) -> std::int32_t {
   requireReadableRange(fileBytes, sampleOffset, 3U, "a 24-bit PCM sample");
 
   std::int32_t signedSampleValue = static_cast<std::int32_t>(

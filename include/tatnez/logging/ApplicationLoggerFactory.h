@@ -24,9 +24,9 @@ public:
    * @param loggerName A stable logger name used by spdlog.
    * @param requestedLogDirectory An optional explicit directory chosen by the user.
    */
-  [[nodiscard]] static auto createLogger(const std::string& loggerName,
-                                         const std::filesystem::path& requestedLogDirectory = {})
-      -> std::shared_ptr<spdlog::logger>;
+  [[nodiscard]] static auto
+  createLogger(const std::string& loggerName,
+               const std::filesystem::path& requestedLogDirectory = {}) -> std::shared_ptr<spdlog::logger>;
 
   /**
    * @brief Determine where logs should be stored when the user did not provide a directory.

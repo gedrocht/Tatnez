@@ -1,0 +1,10 @@
+function(tatnez_enable_clang_tidy target_name enable_clang_tidy)
+  if(NOT enable_clang_tidy)
+    return()
+  endif()
+
+  find_program(CLANG_TIDY_EXECUTABLE NAMES clang-tidy)
+  if(CLANG_TIDY_EXECUTABLE)
+    set_property(TARGET "${target_name}" PROPERTY CXX_CLANG_TIDY "${CLANG_TIDY_EXECUTABLE}")
+  endif()
+endfunction()

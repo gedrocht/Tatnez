@@ -8,13 +8,44 @@
 #include <cstdlib>
 #include <filesystem>
 #include <memory>
+#include <optional>
+#include <string>
+
+namespace {
+
+auto tryGetEnvironmentVariableValue(const char* environmentVariableName) -> std::optional<std::string> {
+#ifdef _WIN32
+  char* duplicatedEnvironmentVariableValue = nullptr;
+  std::size_t duplicatedEnvironmentVariableLength = 0U;
+  const auto duplicationResultCode = _dupenv_s(&duplicatedEnvironmentVariableValue,
+                                               &duplicatedEnvironmentVariableLength, environmentVariableName);
+
+  if (duplicationResultCode != 0 || duplicatedEnvironmentVariableValue == nullptr ||
+      duplicatedEnvironmentVariableLength == 0U) {
+    return std::nullopt;
+  }
+
+  std::string environmentVariableValue{duplicatedEnvironmentVariableValue};
+  std::free(duplicatedEnvironmentVariableValue);
+  return environmentVariableValue;
+#else
+  const auto* environmentVariableValue = std::getenv(environmentVariableName);
+  if (environmentVariableValue == nullptr || *environmentVariableValue == '\0') {
+    return std::nullopt;
+  }
+
+  return std::string{environmentVariableValue};
+#endif
+}
+
+} // namespace
 
 namespace tatnez::logging {
 
 auto ApplicationLoggerFactory::determineDefaultLogDirectory() -> std::filesystem::path {
-  if (const auto* localApplicationDataDirectory = std::getenv("LOCALAPPDATA");
-      localApplicationDataDirectory != nullptr && *localApplicationDataDirectory != '\0') {
-    return std::filesystem::path(localApplicationDataDirectory) / "TatnezRumbleSpeaker" / "logs";
+  if (const auto localApplicationDataDirectory = tryGetEnvironmentVariableValue("LOCALAPPDATA");
+      localApplicationDataDirectory.has_value()) {
+    return std::filesystem::path(localApplicationDataDirectory.value()) / "TatnezRumbleSpeaker" / "logs";
   }
 
   return std::filesystem::current_path() / "logs";
